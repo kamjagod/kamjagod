@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIMIT LAB | 함수의 극한 탐구실</title>
+<style>
+:root{--navy:#17243b;--navy2:#223653;--blue:#4d7cfe;--sky:#eaf0ff;--ink:#182235;--muted:#66738a;--line:#dfe5ef;--bg:#f4f6fb;--green:#16866a;--amber:#b7791f;--card:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,Pretendard,"Noto Sans KR",system-ui,-apple-system,sans-serif;line-height:1.55}
+button,input,textarea{font:inherit}button{cursor:pointer}
+header{background:linear-gradient(120deg,var(--navy),#29456d);color:#fff;padding:25px max(22px,calc((100vw - 1160px)/2));}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.12em;font-size:13px;color:#c9d8ff}.brand-mark{width:28px;height:28px;border-radius:9px;background:#5d86ff;display:grid;place-items:center;color:white;font-weight:900}
+h1{font-size:clamp(25px,4vw,38px);line-height:1.2;margin:13px 0 8px}header p{margin:0;color:#d4def1;max-width:680px}
+.wrap{max-width:1160px;margin:0 auto;padding:24px 20px 60px}
+.topline{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;border-radius:99px;padding:5px 11px;font-size:12px;font-weight:800;background:#e9efff;color:#365bc0}
+.progress{display:flex;gap:5px}.progress span{height:6px;width:42px;border-radius:99px;background:#dce3ef}.progress span.on{background:var(--blue)}
+.layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(290px,.85fr);gap:18px;align-items:start}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 5px 20px rgba(26,43,76,.045)}
+.card h2{font-size:19px;margin:0 0 5px}.sub{font-size:13px;color:var(--muted);margin:0 0 17px}
+.graph-card{padding:18px}.graph-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.function{font-family:Georgia,serif;font-size:23px;font-weight:700;color:#263d69;margin:12px 0}
+.graph-wrap{background:#fbfcff;border:1px solid #e5eaf3;border-radius:13px;padding:8px;position:relative}
+svg{display:block;width:100%;height:auto;touch-action:pan-y}
+.axis{stroke:#7d899d;stroke-width:1.5}.gridline{stroke:#e8edf5;stroke-width:1}.curve{fill:none;stroke:#4c78ef;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}.approach-left{fill:none;stroke:#16a085;stroke-width:3.5;stroke-dasharray:7 5}.approach-right{fill:none;stroke:#e29a32;stroke-width:3.5;stroke-dasharray:7 5}.hole{fill:#fff;stroke:#4c78ef;stroke-width:3}.dot{fill:#17243b;stroke:#fff;stroke-width:2}
+.legend{display:flex;gap:15px;flex-wrap:wrap;font-size:12px;color:var(--muted);padding:10px 4px 2px}.legend i{display:inline-block;width:17px;height:3px;vertical-align:middle;margin-right:5px;border-radius:4px}
+.controls{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;margin-top:16px}.controls label{font-weight:750;font-size:14px}.controls input{width:100%;accent-color:var(--blue);margin-top:9px}.xvalue{background:var(--sky);color:#3159c2;padding:8px 12px;border-radius:10px;font-weight:850;min-width:88px;text-align:center}
+.quickvals{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}.quickvals button,.secondary{border:1px solid var(--line);background:#fff;color:#42516a;border-radius:9px;padding:7px 10px;font-size:12px;font-weight:700}.quickvals button:hover,.secondary:hover{border-color:#9db4ff;background:#f7f9ff}
+.readouts{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:15px}.readout{background:#f7f9fd;border:1px solid #e8edf5;border-radius:12px;padding:11px}.readout small{display:block;color:var(--muted);font-size:11px}.readout strong{font-size:18px;display:block;margin-top:3px}
+.side{display:grid;gap:18px}.question{background:#f7f9ff;border:1px solid #e5ebfa;padding:14px;border-radius:13px;margin:13px 0}.question strong{display:block;margin-bottom:5px}.question p{margin:0;font-size:14px;color:#47556c}
+textarea{width:100%;min-height:82px;resize:vertical;border:1px solid var(--line);border-radius:11px;padding:11px;color:var(--ink);background:#fff}
+.primary{border:0;border-radius:11px;background:var(--blue);color:#fff;padding:11px 15px;font-weight:800}.primary:hover{background:#3d68e8}.primary:disabled{opacity:.5;cursor:not-allowed}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}.hintbox{background:#fff8e9;border:1px solid #f2dfb8;border-radius:12px;padding:12px;margin-top:12px;font-size:13px;color:#765018}.hintbox strong{display:block;margin-bottom:3px}
+.steps{display:flex;gap:7px;margin:15px 0}.step{flex:1;border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 5px;text-align:center;font-size:12px;color:var(--muted);font-weight:750}.step.active{background:var(--sky);border-color:#b9caff;color:#3159c2}
+.table{width:100%;border-collapse:collapse;font-size:13px;margin-top:12px}.table th,.table td{padding:9px 7px;border-bottom:1px solid #edf0f5;text-align:right}.table th:first-child,.table td:first-child{text-align:left}.table th{color:var(--muted);font-weight:750}
+.choice{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.choice button{padding:10px;border:1px solid var(--line);background:#fff;border-radius:10px;font-weight:750;color:#46536a}.choice button.selected{border-color:#6e91ff;background:#eef3ff;color:#3159c2}
+.feedback{font-size:13px;margin-top:10px;padding:10px 12px;border-radius:10px;background:#f2f8f5;color:#17684f;display:none}.feedback.show{display:block}
+.discussion{display:grid;gap:9px;margin-top:12px}.post{padding:10px 12px;background:#f7f9fd;border-radius:10px;font-size:13px}.post b{color:#365bc0}
+.footer-note{font-size:12px;color:var(--muted);margin-top:18px}
+.section{margin-top:18px}.section-title{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.hidden{display:none!important}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.side{grid-template-columns:1fr 1fr}.side .wide{grid-column:1/-1}}
+@media(max-width:560px){.wrap{padding:17px 12px 40px}.card{padding:15px}.side{grid-template-columns:1fr}.side .wide{grid-column:auto}.readouts{grid-template-columns:1fr 1fr}.readout:last-child{grid-column:1/-1}.controls{grid-template-columns:1fr auto}.steps{gap:4px}.step{font-size:10px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><span class="brand-mark">∿</span> LIMIT LAB <span style="opacity:.55">/ 수학 탐구실</span></div>
+  <h1>가까워진다는 것은<br>무슨 뜻일까?</h1>
+  <p>그래프를 움직이고, 수치를 비교하고, 친구와 생각을 나누며 함수의 극한을 발견해 봅시다.</p>
+</header>
+<main class="wrap">
+  <div class="topline">
+    <div><span class="pill">MISSION 01 · 함수의 극한</span> <span style="font-size:13px;color:var(--muted);margin-left:7px">고등학교 수학</span></div>
+    <div class="progress" aria-label="학습 단계"><span class="on" id="p1"></span><span id="p2"></span><span id="p3"></span><span id="p4"></span></div>
+  </div>
+
+  <div class="layout">
+    <section class="card graph-card">
+      <div class="graph-head">
+        <div><h2>① 그래프 실험실</h2><p class="sub">x를 2에 가까이 움직이며 함수값의 변화를 관찰하세요.</p></div>
+        <span class="pill">직접 조작하기</span>
+      </div>
+      <div class="function">f(x) = (x² − 4) / (x − 2) &nbsp; (x ≠ 2)</div>
+      <div class="graph-wrap">
+        <svg id="graph" viewBox="0 0 700 390" role="img" aria-label="함수 y=x+2의 그래프. x=2에서 뚫린 점이 표시됩니다.">
+          <g id="grid"></g><g id="axes"></g><path id="leftCurve" class="approach-left"></path><path id="rightCurve" class="approach-right"></path><path id="curve" class="curve"></path><circle id="hole" class="hole" r="7"></circle><circle id="movingDot" class="dot" r="6"></circle>
+          <text x="675" y="210" fill="#64748b" font-size="13">x</text><text x="360" y="17" fill="#64748b" font-size="13">y</text>
+          <text x="365" y="40" fill="#3159c2" font-size="12">x = 2에서 함수값은 정의되지 않음</text>
+        </svg>
+      </div>
+      <div class="legend"><span><i style="background:#4c78ef"></i>함수 그래프</span><span><i style="background:#16a085"></i>왼쪽에서 접근</span><span><i style="background:#e29a32"></i>오른쪽에서 접근</span><span>○ 뚫린 점: (2, 4)</span></div>
+      <div class="controls">
+        <div><label for="xslider">x값 조절하기</label><input id="xslider" type="range" min="0.5" max="3.5" step="0.01" value="1.5"></div>
+        <div class="xvalue" id="xdisplay">x = 1.50</div>
+      </div>
+      <div class="quickvals">
+        <button data-x="1">x = 1</button><button data-x="1.9">x = 1.9</button><button data-x="1.99">x = 1.99</button><button data-x="2.01">x = 2.01</button><button data-x="2.1">x = 2.1</button><button data-x="3">x = 3</button>
+      </div>
+      <div class="readouts">
+        <div class="readout"><small>현재 x값</small><strong id="rx">1.50</strong></div>
+        <div class="readout"><small>현재 함수값 f(x)</small><strong id="ry">3.50</strong></div>
+        <div class="readout"><small>2와의 거리 |x−2|</small><strong id="rd">0.50</strong></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title"><h2>② 수치표로 확인하기</h2><span class="pill">관찰 자료</span></div>
+        <p class="sub">2의 왼쪽과 오른쪽에서 접근할 때 함수값을 비교해 보세요.</p>
+        <table class="table"><thead><tr><th>접근 방향</th><th>x</th><th>f(x)</th></tr></thead><tbody id="valueTable"></tbody></table>
+      </div>
+    </section>
+
+    <aside class="side">
+      <section class="card">
+        <h2>③ 생각을 정리해요</h2><p class="sub">관찰한 내용을 바탕으로 질문에 답해 보세요.</p>
+        <div class="question"><strong>질문 1. 왼쪽에서 접근하면?</strong><p>x가 2보다 작은 값에서 2에 가까워질 때, f(x)는 어떤 값에 가까워지나요?</p></div>
+        <div class="choice" id="leftChoices"><button data-answer="3">3</button><button data-answer="4">4</button><button data-answer="2">2</button><button data-answer="정해지지 않음">정해지지 않음</button></div>
+        <div class="question"><strong>질문 2. 오른쪽에서 접근하면?</strong><p>x가 2보다 큰 값에서 2에 가까워질 때, f(x)는 어떤 값에 가까워지나요?</p></div>
+        <div class="choice" id="rightChoices"><button data-answer="3">3</button><button data-answer="4">4</button><button data-answer="2">2</button><button data-answer="정해지지 않음">정해지지 않음</button></div>
+        <button class="primary" id="checkAnswers" style="width:100%;margin-top:12px">내 생각 확인하기</button>
+        <div class="feedback" id="answerFeedback" aria-live="polite"></div>
+      </section>
+
+      <section class="card">
+        <h2>④ 단계별 도움 받기</h2><p class="sub">혼자 해결하기 어렵다면 힌트를 하나씩 열어 보세요.</p>
+        <div class="steps"><div class="step active" id="s1">힌트 1</div><div class="step" id="s2">힌트 2</div><div class="step" id="s3">힌트 3</div></div>
+        <p style="font-size:14px;margin:0">먼저 스스로 생각해 보고, 필요한 만큼만 도움을 받아 보세요.</p>
+        <button class="secondary" id="hintBtn" style="width:100%;margin-top:12px">다음 힌트 보기</button>
+        <div class="hintbox hidden" id="hintBox" aria-live="polite"></div>
+      </section>
+
+      <section class="card wide">
+        <h2>⑤ 친구와 생각 나누기</h2><p class="sub">내 예측과 근거를 적고, 친구의 생각과 비교해 보세요.</p>
+        <label for="myThought" style="font-size:13px;font-weight:750">나의 생각과 이유</label>
+        <textarea id="myThought" placeholder="예: 양쪽에서 접근할 때 함수값이 모두 4에 가까워질 것 같다. 왜냐하면…"></textarea>
+        <div class="btnrow"><button class="primary" id="shareBtn">생각 기록하기</button><button class="secondary" id="sampleBtn">토론 질문 보기</button></div>
+        <div class="discussion" id="discussion"><div class="post"><b>토론 질문</b><br>그래프에서 x=2일 때 점이 비어 있는데도 극한값을 말할 수 있을까요?</div></div>
+      </section>
+    </aside>
+  </div>
+
+  <section class="card section">
+    <div class="section-title"><div><h2>⑥ 혼자 도전하기</h2><p class="sub">이제 새로운 함수에서 배운 내용을 적용해 봅시다.</p></div><span class="pill">도움 없이 도전</span></div>
+    <div class="question"><strong>도전 문제</strong><p>함수 g(x) = (x² − 9) / (x − 3) (x ≠ 3)에서 x가 3에 한없이 가까워질 때, g(x)의 극한값은 얼마일까요?</p></div>
+    <div class="choice" id="finalChoices"><button data-answer="3">3</button><button data-answer="6">6</button><button data-answer="9">9</button><button data-answer="존재하지 않음">존재하지 않음</button></div>
+    <div class="btnrow"><button class="primary" id="finalCheck">최종 답안 제출</button><button class="secondary" id="resetBtn">처음부터 다시</button></div>
+    <div class="feedback" id="finalFeedback" aria-live="polite"></div>
+  </section>
+  <p class="footer-note">학습 설계: 근접발달영역(ZPD) · 비계 설정 · 사회적 상호작용 · 언어를 통한 사고의 발달. 이 자료의 토론 기록은 현재 브라우저 화면 안에서만 관리되며 서버로 전송되지 않습니다.</p>
+</main>
+<script>
+(() => {
+ const $ = id => document.getElementById(id);
+ const svgNS='http://www.w3.org/2000/svg';
+ const W=700,H=390, xMin=-0.5,xMax=4.5,yMin=0,yMax=7;
+ const X=x=>(x-xMin)/(xMax-xMin)*W, Y=y=>H-(y-yMin)/(yMax-yMin)*H;
+ // Grid and axes
+ for(let x=0;x<=4;x+=1){
+   const line=document.createElementNS(svgNS,'line');line.setAttribute('x1',X(x));line.setAttribute('x2',X(x));line.setAttribute('y1',0);line.setAttribute('y2',H);line.setAttribute('class','gridline');$('grid').appendChild(line);
+   const t=document.createElementNS(svgNS,'text');t.setAttribute('x',X(x));t.setAttribute('y',Y(0)+19);t.setAttribute('text-anchor','middle');t.setAttribute('fill','#64748b');t.setAttribute('font-size','12');t.textContent=x;$('axes').appendChild(t);
+ }
+ for(let y=0;y<=7;y+=1){
+   const line=document.createElementNS(svgNS,'line');line.setAttribute('x1',0);line.setAttribute('x2',W);line.setAttribute('y1',Y(y));line.setAttribute('y2',Y(y));line.setAttribute('class','gridline');$('grid').appendChild(line);
+   const t=document.createElementNS(svgNS,'text');t.setAttribute('x',X(0)-10);t.setAttribute('y',Y(y)+4);t.setAttribute('text-anchor','end');t.setAttribute('fill','#64748b');t.setAttribute('font-size','12');t.textContent=y;$('axes').appendChild(t);
+ }
+ const ax=document.createElementNS(svgNS,'line');ax.setAttribute('x1',0);ax.setAttribute('x2',W);ax.setAttribute('y1',Y(0));ax.setAttribute('y2',Y(0));ax.setAttribute('class','axis');$('axes').appendChild(ax);
+ const ay=document.createElementNS(svgNS,'line');ay.setAttribute('x1',X(0));ay.setAttribute('x2',X(0));ay.setAttribute('y1',0);ay.setAttribute('y2',H);ay.setAttribute('class','axis');$('axes').appendChild(ay);
+ function path(a,b,n){let d='';for(let i=0;i<=n;i++){let x=a+(b-a)*i/n,y=x+2;d+=(i?'L':'M')+X(x).toFixed(2)+','+Y(y).toFixed(2)+' ';}return d;}
+ $('curve').setAttribute('d',path(0,4,180));
+ $('leftCurve').setAttribute('d',path(1.15,1.985,50));
+ $('rightCurve').setAttribute('d',path(2.015,2.85,50));
+ $('hole').setAttribute('cx',X(2));$('hole').setAttribute('cy',Y(4));
+ const slider=$('xslider');
+ function update(x){
+   const y=x+2; $('xdisplay').textContent='x = '+x.toFixed(2);$('rx').textContent=x.toFixed(2);
+   $('ry').textContent=Math.abs(x-2)<0.0001?'정의되지 않음':y.toFixed(2);$('rd').textContent=Math.abs(x-2).toFixed(2);
+   $('movingDot').setAttribute('cx',X(x));$('movingDot').setAttribute('cy',Y(y));
+ }
+ slider.addEventListener('input',()=>update(Number(slider.value)));
+ document.querySelectorAll('[data-x]').forEach(b=>b.addEventListener('click',()=>{slider.value=b.dataset.x;update(Number(slider.value));}));
+ update(Number(slider.value));
+ const rows=[['왼쪽','1.9','3.9'],['왼쪽','1.99','3.99'],['왼쪽','1.999','3.999'],['오른쪽','2.001','4.001'],['오른쪽','2.01','4.01'],['오른쪽','2.1','4.1']];
+ $('valueTable').innerHTML=rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
+ let left=null,right=null,final=null,hint=0;
+ function wireChoices(id,setter){$(id).querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{$(id).querySelectorAll('button').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');setter(b.dataset.answer);}));}
+ wireChoices('leftChoices',v=>left=v);wireChoices('rightChoices',v=>right=v);wireChoices('finalChoices',v=>final=v);
+ $('checkAnswers').addEventListener('click',()=>{
+   const f=$('answerFeedback');f.classList.add('show');
+   if(left===null||right===null){f.textContent='왼쪽과 오른쪽의 예측을 모두 선택해 주세요.';return;}
+   f.textContent=left==='4'&&right==='4'?'정확해요! 양쪽에서 접근할 때 함수값은 모두 4에 가까워집니다.':'아직 다시 관찰해 볼 수 있어요. 수치표에서 1.99와 2.01의 함수값을 비교해 보세요.';
+   if(left==='4'&&right==='4')$('p2').classList.add('on');
+ });
+ const hints=[
+  ['힌트 1 · 접근 방향','x가 2보다 작은 수에서 2로 다가가는 경우와, 2보다 큰 수에서 다가가는 경우를 나누어 관찰해 보세요.'],
+  ['힌트 2 · 수치 비교','x=1.99일 때 함수값은 3.99이고, x=2.01일 때 함수값은 4.01입니다. 두 값은 어디에 가까워지고 있나요?'],
+  ['힌트 3 · 식의 모양','x²−4=(x−2)(x+2)이므로 x≠2일 때 f(x)=x+2입니다. x가 2에 가까워지면 x+2는 어떤 값에 가까워질까요?']
+ ];
+ $('hintBtn').addEventListener('click',()=>{
+   if(hint<3){$('hintBox').classList.remove('hidden');$('hintBox').innerHTML='<strong>'+hints[hint][0]+'</strong>'+hints[hint][1];hint++;for(let i=1;i<=3;i++)$('s'+i).classList.toggle('active',i===hint|| (hint===3&&i===3));$('hintBtn').textContent=hint===3?'힌트 모두 확인했어요':'다음 힌트 보기';$('p1').classList.add('on');}
+   else $('hintBtn').textContent='힌트를 모두 확인했어요';
+ });
+ $('shareBtn').addEventListener('click',()=>{
+   const val=$('myThought').value.trim();if(!val){$('myThought').focus();return;}
+   const p=document.createElement('div');p.className='post';const b=document.createElement('b');b.textContent='나의 생각';const t=document.createElement('div');t.textContent=val;p.append(b,t);$('discussion').appendChild(p);$('myThought').value='';$('p3').classList.add('on');
+ });
+ $('sampleBtn').addEventListener('click',()=>{
+   const p=document.createElement('div');p.className='post';p.innerHTML='<b>함께 토론해 보기</b><br>① 함수값 f(2)가 정의되지 않는 것과 극한값이 존재하지 않는 것은 같은 뜻일까요?<br>② 친구의 설명 중 설득력 있었던 근거는 무엇인가요?';$('discussion').appendChild(p);
+ });
+ $('finalCheck').addEventListener('click',()=>{
+   const f=$('finalFeedback');f.classList.add('show');
+   if(final===null){f.textContent='답을 하나 선택한 뒤 제출해 주세요.';return;}
+   if(final==='6'){f.textContent='정답입니다! (x²−9)/(x−3)=x+3 (x≠3)이므로 x가 3에 가까워질 때 함수값은 6에 가까워집니다.';$('p4').classList.add('on');}
+   else f.textContent='다시 생각해 봅시다. x²−9를 인수분해하고 x−3으로 약분해 보세요.';
+ });
+ $('resetBtn').addEventListener('click',()=>{
+   slider.value=1.5;update(1.5);left=right=final=null;hint=0;
+   document.querySelectorAll('.choice button').forEach(b=>b.classList.remove('selected'));
+   ['answerFeedback','finalFeedback','hintBox'].forEach(id=>{$(id).classList.remove('show');$(id).classList.add('hidden');$(id).textContent='';});
+   $('hintBox').classList.add('hidden');$('hintBtn').textContent='다음 힌트 보기';
+   for(let i=1;i<=3;i++)$('s'+i).classList.toggle('active',i===1);
+   for(let i=1;i<=4;i++)$('p'+i).classList.toggle('on',i===1);
+   $('discussion').innerHTML='<div class="post"><b>토론 질문</b><br>그래프에서 x=2일 때 점이 비어 있는데도 극한값을 말할 수 있을까요?</div>';
+ });
+})();
+</script>
+</body>
+</html>
