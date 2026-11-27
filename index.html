@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIMIT LAB | 함수의 극한 탐구실</title>
+<style>
+:root{--navy:#17243b;--blue:#4d7cfe;--sky:#eaf0ff;--ink:#182235;--muted:#66738a;--line:#dfe5ef;--bg:#f4f6fb;--green:#16866a;--amber:#d98a1f;--card:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Pretendard,"Noto Sans KR",system-ui,-apple-system,sans-serif,"Cambria Math","STIX Two Math","Noto Sans Math";line-height:1.55}
+button,input,textarea{font:inherit}button{cursor:pointer}
+header{background:linear-gradient(120deg,#17243b,#29456d);color:#fff;padding:14px max(16px,calc((100vw - 1000px)/2));display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.brand{font-weight:900;letter-spacing:.1em;font-size:15px}.brand small{opacity:.6;font-weight:600;letter-spacing:0;margin-left:6px}
+.who{font-size:12px;color:#d4def1;display:flex;gap:8px;align-items:center}.badge{background:rgba(255,255,255,.15);border-radius:99px;padding:3px 10px}
+.tabs{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line);display:flex;justify-content:center;gap:4px;padding:6px}
+.tab{border:0;background:none;padding:9px 16px;border-radius:10px;font-weight:800;color:var(--muted);font-size:14px}.tab.on{background:var(--sky);color:#3159c2}
+.wrap{max-width:1000px;margin:0 auto;padding:18px 16px 60px}.panel{display:block}.sheet-in{background:var(--bg);border-radius:16px;max-width:640px;width:100%;max-height:92vh;overflow:auto;padding:14px}.modal .sheet-in .card{max-width:none;margin-bottom:10px}.sheet-in #board{max-height:38vh!important}.dash{max-width:1000px;margin:0 auto;padding:16px}.flash{animation:fl .9s;border-radius:14px}@keyframes fl{0%{box-shadow:0 0 0 3px #4d7cfe}100%{box-shadow:0 0 0 0 transparent}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px}
+h2{font-size:18px;margin:0 0 4px}.sub{font-size:13px;color:var(--muted);margin:0 0 12px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:8px}.chip{flex:none;border:1px solid var(--line);background:#fff;border-radius:99px;padding:6px 12px;font-size:13px;font-weight:700;color:#42516a}.chip.on{background:var(--blue);border-color:var(--blue);color:#fff}.chip.done::after{content:" ✓";color:var(--green)}.chip.on.done::after{color:#fff}
+.fnrow{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 10px}.fn{font-size:22px;font-weight:700;color:#263d69;word-break:break-all}
+.btn{border:1px solid var(--line);background:#fff;color:#42516a;border-radius:9px;padding:7px 11px;font-size:13px;font-weight:700}.btn:hover{border-color:#9db4ff;background:#f7f9ff}
+.pri{border:0;border-radius:11px;background:var(--blue);color:#fff;padding:11px 16px;font-weight:800}.pri:hover{background:#3d68e8}.pri:disabled{opacity:.5}
+.graph{background:#fbfcff;border:1px solid #e5eaf3;border-radius:12px;touch-action:pan-y}svg{display:block;width:100%;height:auto;overflow:hidden}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);padding:8px 2px}.legend i{display:inline-block;width:16px;height:4px;border-radius:4px;margin-right:5px;vertical-align:middle}
+.ctl{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}.ctl input[type=range]{width:100%;accent-color:var(--blue)}
+.read{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.read div{background:#f7f9fd;border:1px solid #e8edf5;border-radius:10px;padding:7px 11px;font-size:13px}.read b{font-size:15px}
+.row{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}
+details{border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-top:10px;background:#fff}summary{font-weight:800;cursor:pointer;font-size:14px}
+table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}th,td{padding:7px;border-bottom:1px solid #edf0f5;text-align:right}th:first-child,td:first-child{text-align:left}th{color:var(--muted)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.opts button{padding:12px 8px;border:1px solid var(--line);background:#fff;border-radius:10px;font-weight:750;color:#46536a}.opts button.on{border-color:#6e91ff;background:#eef3ff;color:#3159c2}
+input[type=text],input[type=number],textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff;color:var(--ink)}textarea{min-height:90px;resize:vertical}
+.fb{display:none;margin-top:12px;padding:11px 13px;border-radius:10px;background:#f2f8f5;color:#17684f;font-size:14px}.fb.show{display:block}.fb.bad{background:#fff4f2;color:#a3392a}
+.hint{display:none;background:#fff8e9;border:1px solid #f2dfb8;border-radius:12px;padding:11px;margin-top:10px;font-size:13px;color:#765018}.hint.show{display:block}
+.keys{display:flex;gap:5px;flex-wrap:wrap;margin:8px 0}.keys button{min-width:38px;border:1px solid var(--line);background:#fff;border-radius:8px;padding:5px 8px;font-size:15px}
+.post{padding:10px 12px;background:#f7f9fd;border-radius:10px;font-size:13px;margin-top:8px}.post b{color:#365bc0}.post small{color:var(--muted);margin-left:6px}
+.q{background:#f7f9ff;border:1px solid #e5ebfa;border-radius:12px;padding:12px 14px;font-size:14px}
+.modal{position:fixed;inset:0;background:rgba(23,36,59,.7);display:none;place-items:center;z-index:20;padding:16px}.modal.on{display:grid}.modal .card{max-width:380px;width:100%;margin:0}
+label{font-size:13px;font-weight:750;display:block;margin:10px 0 4px}.err{color:#a3392a;font-size:13px;margin-top:8px}
+.note{font-size:12px;color:var(--muted);margin-top:14px}.bar{height:8px;background:#e3e9f4;border-radius:9px;overflow:hidden;margin:6px 0 4px}.bar i{display:block;height:100%;background:var(--green);width:0;transition:width .3s}
+.fb{white-space:pre-line}.btn.on{border-color:#6e91ff;background:#eef3ff;color:#3159c2}.scrow{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}.scrow b{color:#b7791f;letter-spacing:.05em}
+.scbar{font-size:13px;font-weight:800;color:#b7791f;margin-bottom:8px}.zones{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}.zone{border-radius:12px;padding:10px;border:1px solid var(--line)}.zone h3{font-size:13px;margin:0 0 6px}.zone.z1{background:#f0faf6}.zone.z2{background:#fff8e9;border:2px solid #e8c36a}.zone.z3{background:#f4f6fa}.zone .chip{margin:2px;font-size:12px;padding:4px 9px}
+@media(min-width:1001px){
+body{height:100vh;overflow:hidden;display:flex;flex-direction:column}header{padding-top:8px;padding-bottom:8px}
+.dash{max-width:none;margin:0;width:100%;flex:1;min-height:0;display:grid;grid-template-columns:1.35fr 1fr;gap:12px;padding:10px 14px}
+.col{overflow:auto;min-height:0;scrollbar-width:thin}.card{padding:12px;margin-bottom:8px;border-radius:12px}h2{font-size:15px}
+.dash .card .sub:not(#pfn):not(#logsub){display:none}.chips{flex-wrap:wrap;overflow:visible;margin-bottom:4px}.fn{font-size:18px}.fnrow{margin:0 0 6px}
+.q{font-size:13px;padding:8px 10px}.opts{margin:8px 0}.opts button{padding:8px 6px;font-size:13px}.read{margin:6px 0}.row{margin:6px 0}textarea{min-height:56px}
+.dash .zones{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}.zone{padding:7px}#loglist,#board{max-height:130px;overflow:auto}label{margin:6px 0 3px}
+}
+@media(max-width:560px){.fn{font-size:18px}.tab{padding:9px 10px;font-size:13px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="modal" id="join"><div class="card">
+  <h2>LIMIT LAB 입장</h2><p class="sub">선생님이 알려 준 코드로 입장하면 내 활동이 저장돼요.</p>
+  <label for="jn">이름 (또는 번호)</label><input type="text" id="jn" maxlength="20" placeholder="예: 1305 김하늘">
+  <label for="jc">수업 코드</label><input type="text" id="jc" maxlength="20" placeholder="예: MATH2A">
+  <div class="err" id="jerr"></div>
+  <div class="row"><button class="pri" id="jgo">입장하기</button><button class="btn" id="jguest">저장 없이 둘러보기</button><button class="btn" id="jteach">교사용 요약</button></div>
+</div></div>
+
+<div class="modal" id="tmodal"><div class="card" style="max-width:680px"><h2>수업 요약 (교사용)</h2><p class="sub">학생별 해결·힌트·도움 수준으로 ZPD 변화를 확인해요.</p><div id="tbl" style="overflow:auto"></div><div class="row"><button class="btn" id="tclose">닫기</button></div></div></div>
+
+<div class="modal" id="shmodal"><div class="sheet-in"><div class="row" style="justify-content:space-between;align-items:center;margin:0 0 8px"><b>💬 생각 나누기</b><button class="btn" id="shclose">닫기 ✕</button></div>
+<section class="panel" id="t-share">
+  <div class="card">
+    <h2>생각 나누기</h2><p class="sub">내 예측과 이유를 쓰면 같은 수업 코드의 친구들과 공유돼요.</p>
+    <div class="q" id="dq"></div>
+    <label for="thought">나의 생각과 이유</label>
+    <textarea id="thought" placeholder="예: 왼쪽에서도 오른쪽에서도 4에 가까워지므로 극한은 4다. 왜냐하면…"></textarea>
+    <div id="framesWrap"><label>문장틀 (눌러서 넣고 빈칸을 채워 보세요)</label><div class="keys" id="frames"></div></div>
+    <div class="keys" id="keys"></div>
+    <div class="row"><button class="pri" id="post">생각 올리기</button><button class="btn" id="convert">수식 예쁘게 바꾸기</button></div>
+  </div>
+  <div class="card"><div class="row" style="margin-top:0;justify-content:space-between;align-items:center"><h2>친구들의 생각</h2><button class="btn" id="refresh">새로고침</button></div><div id="board"></div></div>
+</section>
+</div></div>
+
+<header>
+  <div class="brand">LIMIT LAB<small>함수의 극한 탐구실</small></div>
+  <div class="who"><button class="pri" id="shopen" style="padding:6px 12px;font-size:13px">💬 생각 나누기 · 친구 생각 보기</button><a class="badge" id="formLink" style="display:none;color:#fff;text-decoration:none" target="_blank" rel="noopener">설문지 제출</a><span class="badge" id="who"></span><button class="badge" id="logout" style="border:0;color:#fff;cursor:pointer">나가기</button><span class="badge" id="sync"></span></div>
+</header>
+
+
+<main class="dash"><div class="col">
+<section class="panel on" id="t-lab">
+  <div class="chips" id="chips"></div>
+  <div class="card" id="custom" style="display:none">
+    <label for="cexpr">함수식 f(x) (곱셈 *, 거듭제곱 ^)</label><input type="text" id="cexpr" value="sin(x)/x" autocapitalize="off" spellcheck="false">
+    <label for="ca">x가 가까워질 값 a</label><input type="number" id="ca" value="0" step="any">
+    <div class="row"><button class="pri" id="capply">이 함수로 실험</button></div><div class="err" id="cerr"></div>
+    <p class="note">쓸 수 있는 것: sin cos tan sqrt abs ln log exp floor pi · 예) (x^2-1)/(x-1), abs(x)/x, sqrt(x+4)-2</p>
+  </div>
+  <div class="card" id="scaf" style="background:#fffdf5;border-color:#f0dfae"></div>
+  <div class="card">
+    <div class="fnrow"><div class="fn" id="fnShow"></div><button class="btn" id="copyFn">수식 복사</button></div>
+    <div class="graph"><svg id="svg" viewBox="0 0 700 360" role="img" aria-label="함수 그래프"></svg></div>
+    <div class="legend"><span><i style="background:#16a085"></i>왼쪽(x&lt;a)</span><span><i style="background:#e29a32"></i>오른쪽(x&gt;a)</span><span>○ 뚫린 점 · ● 함수값</span><span>그래프를 직접 끌어도 돼요</span></div>
+    <div class="ctl"><input id="ts" type="range" min="-1" max="1" step="0.001" value="-0.7" aria-label="x 위치"><div class="read" style="margin:0"><div>x = <b id="rx"></b></div></div></div>
+    <div class="read"><div>f(x) = <b id="ry"></b></div><div>|x−a| = <b id="rd"></b></div><div id="fa"></div></div>
+    <div class="row">
+      <button class="btn" id="bApp">▶ 양쪽에서 다가가기</button><button class="btn" id="bZoomAuto">🔍 자동 확대</button><button class="btn" id="bIn">확대 ×5</button><button class="btn" id="bOut">축소 ×5</button><button class="btn" id="bReset">보기 초기화</button>
+    </div>
+    <div class="note" id="wnote"></div>
+    <div id="tdet"><table><thead><tr><th>δ</th><th>왼쪽 x</th><th>f(x)</th><th>오른쪽 x</th><th>f(x)</th></tr></thead><tbody id="tbody"></tbody></table></div>
+    <details id="edet"><summary>ε–δ 도전: 극한을 엄밀하게 확인해 보기</summary>
+      <p class="sub" style="margin-top:8px" id="etxt">함수값이 L±ε 안에 들어오도록 δ를 줄여 보세요.</p>
+      <label for="eps">ε (허용 오차)</label><input type="range" id="eps" min="0.03" max="0.5" step="0.01" value="0.25" style="width:100%">
+      <label for="del">δ (x의 범위)</label><input type="range" id="del" min="0.02" max="1" step="0.01" value="1" style="width:100%">
+      <div class="fb show" id="emsg"></div>
+    </details>
+  </div>
+</section>
+
+</div><div class="col">
+<section class="panel" id="t-predict">
+  <div class="card">
+    <h2>x가 a에 가까워지면?</h2><p class="sub" id="pfn"></p>
+    <div class="scbar" id="scbar"></div>
+    <div class="q" id="qtxt"></div>
+    <div class="opts" id="opts">
+      <button data-c="conv">한 값에 가까워진다</button><button data-c="diff">왼쪽·오른쪽이 달라서 극한이 없다</button>
+      <button data-c="inf">한없이 커지거나 작아진다 (발산)</button><button data-c="osc">진동해서 극한이 없다</button>
+    </div>
+    <div id="numWrap" style="display:none"><label for="num">극한값 (분수는 1/2처럼 써도 돼요)</label><input type="text" id="num" autocomplete="off"></div>
+    <div class="row" id="conf"><span style="font-size:13px;font-weight:700;align-self:center">얼마나 확신해요?</span><button class="btn" data-v="1">😕 잘 모르겠어요</button><button class="btn" data-v="2">😐 반반</button><button class="btn" data-v="3">😀 확실해요</button></div>
+    <div class="row"><button class="pri" id="check">내 예측 확인</button><button class="btn" id="hintBtn">힌트 보기 (0/3)</button></div>
+    <div class="hint" id="hintBox"></div><div class="fb" id="fb" aria-live="polite"></div>
+  </div>
+  <div class="card"><h2>나의 근접발달영역(ZPD) 지도</h2><p class="sub">ZPD는 혼자서는 어렵지만 도움을 받으면 해낼 수 있는 영역이에요. 활동 기록에 따라 문제가 자동으로 나뉘어요.</p><div class="zones" id="zones"></div><div class="row" id="recRow"></div></div>
+  <div class="card"><b>해결한 함수</b> <span id="progT"></span><div class="bar"><i id="progB"></i></div><button class="btn" id="nextFn">다음 함수 도전</button></div>
+</section>
+
+</div></main>
+
+<script>
+/* ===== 설정: 선생님이 수정하는 곳 ===== */
+const CFG={
+  SCRIPT_URL:'',   // Apps Script 웹앱 URL (…/exec). 비워 두면 이 기기에만 저장돼요.
+  FORM_URL:''      // (선택) 구글 설문지 링크. 넣으면 '내 기록' 탭에 제출 버튼이 생겨요.
+};
+(()=>{
+const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
+let S={sc:3,stat:{},name:'',code:'',guest:false,sid:Math.random().toString(36).slice(2,9),solved:{},log:[],q:[]};
+try{Object.assign(S,JSON.parse(localStorage.getItem('limitlab')||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem('limitlab',JSON.stringify(S))}catch(e){}};
+
+/* ===== 수식 문자 예쁘게 (복사해도 유지되는 유니코드) ===== */
+const SUP={0:'⁰',1:'¹',2:'²',3:'³',4:'⁴',5:'⁵',6:'⁶',7:'⁷',8:'⁸',9:'⁹','-':'⁻'},IT={x:'𝑥',y:'𝑦',f:'𝑓',g:'𝑔',h:'ℎ',a:'𝑎',L:'𝐿',n:'𝑛'};
+function M(s,ex){
+  s=String(s).replace(/\^(-?\d+)/g,(m,d)=>[...d].map(c=>SUP[c]).join('')).replace(/->/g,'→').replace(/!=/g,'≠').replace(/<=/g,'≤').replace(/>=/g,'≥').replace(/\bsqrt\b/g,'√').replace(/\binf\b/g,'∞').replace(/\bpi\b/g,'π');
+  if(ex)s=s.replace(/abs\(([^()]*)\)/g,'|$1|').replace(/floor\(([^()]*)\)/g,'⌊$1⌋').replace(/\*/g,'·').replace(/\s*([+\-])\s*/g,(m,c)=>' '+(c=='-'?'−':c)+' ').replace(/\(\s*([−+])\s*/g,'($1').trim();
+  return s.replace(/(?<![A-Za-z_])([xyfghaLn])(?![A-Za-z_])/g,(m,c)=>IT[c]);
+}
+function walk(n){if(n.nodeType===3){n.nodeValue=M(n.nodeValue);return}if(/^(SCRIPT|STYLE|TEXTAREA|INPUT)$/.test(n.nodeName))return;n.childNodes.forEach(walk)}
+const fmt=v=>!isFinite(v)?'정의 안 됨':Math.abs(v)>=1e7?v.toExponential(2):String(+v.toPrecision(7)).replace('-','−');
+const tick=v=>String(+v.toPrecision(3)).replace('-','−');
+function copy(t){try{navigator.clipboard.writeText(t)}catch(e){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove()}}
+
+/* ===== 함수 은행 ===== */
+const Wf=x=>{let s=0;for(let n=0;n<6;n++)s+=Math.cos(Math.pow(3,n)*Math.PI*x)/Math.pow(2,n);return s};
+const FN=[
+{id:'f1',lv:1,e:'(x^2-4)/(x-2)',a:2,w:1.5,tip:'x²−4=(x−2)(x+2)이므로 x≠2에서 f(x)=x+2. x→2이면 4에 가까워져요. f(2)는 정의되지 않아도 극한은 있어요.'},
+{id:'f4',lv:2,e:'abs(x)/x',a:0,w:1,tip:'x>0이면 1, x<0이면 −1. 좌극한과 우극한이 달라서 극한이 없어요.'},
+{id:'f7',lv:2,e:'1/x^2',a:0,w:1,tip:'양쪽 모두 +∞로 발산해요. (극한값은 없지만 방향은 같아요.)'},
+{id:'f11',lv:3,e:'sin(1/x)',a:0,w:0.5,tip:'x→0이면 1/x가 한없이 커져 −1과 1 사이를 끝없이 진동해요.'},
+{id:'f13',lv:3,e:'W(x)',d:'W(x) = Σ (1/2)^n·cos(3^n·π·x)  [n=0~5]',a:0,w:1.5,tip:'바이어슈트라스형 함수는 연속이라 극한값=함수값≈1.97. 🔍 자동 확대해 보면 아무리 확대해도 울퉁불퉁해요 (어디서도 미분 불가능한 함수의 맛보기).'}
+];
+const DQ={conv:'f(a)가 정의되지 않았는데도 극한값을 말할 수 있는 이유는 무엇일까요?',diff:'왼쪽과 오른쪽 극한이 다르면 극한이 없다고 말하는 이유는 무엇일까요?',inf:'∞는 수일까요? "극한값이 ∞이다"와 "극한이 존재한다"는 같은 말일까요?',osc:'함수값이 계속 움직이는데 왜 하나의 값에 가까워진다고 말할 수 없을까요?'};
+const CATS={conv:'한 값에 수렴',diff:'좌극한 ≠ 우극한',inf:'∞ 또는 −∞로 발산',osc:'진동'};
+
+function compile(src){
+  src=String(src).trim();if(!src||src.length>120)return null;
+  const s=src.replace(/\s+/g,' ').replace(/(\d)\s*(?=[a-z(])/gi,'$1*').replace(/\)\s*(?=[\da-z(])/gi,')*').replace(/\bx\s*(?=\()/g,'x*').replace(/\^/g,'**');
+  if(!/^[\d+\-*/().,\sx]*$/.test(s.replace(/\b(sin|cos|tan|sqrt|abs|ln|log|exp|floor|pi|W)\b/g,'')))return null;
+  try{
+    const f=new Function('x','sin','cos','tan','sqrt','abs','ln','log','exp','floor','pi','W','"use strict";return ('+s+')');
+    const g=x=>f(x,Math.sin,Math.cos,Math.tan,Math.sqrt,Math.abs,Math.log,Math.log10,Math.exp,Math.floor,Math.PI,Wf);
+    return typeof g(0.5)==='number'?g:null;
+  }catch(e){return null}
+}
+const safe=(f,x)=>{try{const v=f(x);return typeof v==='number'?v:NaN}catch(e){return NaN}};
+function side(v){
+  if(v.some(t=>!isFinite(t)))return{c:'osc'};
+  const l=v[3],p=v[2],q=v[1];
+  if(Math.abs(l)>1e4&&Math.abs(l)>Math.abs(p)*1.5)return{c:'inf',s:Math.sign(l)};
+  if(Math.abs(l-p)<1e-3*(1+Math.abs(l))&&Math.abs(p-q)<1e-2*(1+Math.abs(l)))return{c:'conv',v:l};
+  return{c:'osc'};
+}
+function cls(f,a){
+  const ks=[2,3,4,5],L=side(ks.map(k=>safe(f,a-Math.pow(10,-k)))),R=side(ks.map(k=>safe(f,a+Math.pow(10,-k))));
+  let cat;
+  if(L.c==='osc'||R.c==='osc')cat='osc';
+  else if(L.c==='conv'&&R.c==='conv')cat=Math.abs(L.v-R.v)<1e-3*(1+Math.abs(L.v))?'conv':'diff';
+  else if(L.c==='inf'&&R.c==='inf'&&L.s===R.s)cat='inf';
+  else cat='diff';
+  return{cat,L:cat==='conv'?(L.v+R.v)/2:NaN,l:L,r:R};
+}
+
+/* ===== 상태 ===== */
+let conf=0,recFn=null,cur=null,t=-0.7,pred=null,hintN=0,tries=0,raf=0,sc={};
+function setFn(o,custom){
+  stop();const f=compile(o.e);if(!f)return false;
+  cur={...o,f,w0:o.w,res:cls(f,o.a)};if(custom)cur.id='custom';
+  t=-0.7;pred=null;hintN=0;tries=0;conf=0;document.querySelectorAll('#conf .btn').forEach(b=>b.classList.remove('on'));$('ts').value=t;
+  $('fnShow').textContent=M('f(x) = ',1)+M(cur.d||cur.e,1);
+  $('pfn').textContent=M('f(x) = ',1)+M(cur.d||cur.e,1)+M('  ,  x → '+cur.a);
+  $('qtxt').textContent=M('x가 '+cur.a+'에 가까워질 때, f(x)는 어떻게 될까요? 그래프와 수치표를 근거로 예측해 보세요.');
+  $('dq').textContent=DQ[cur.res.cat];
+  document.querySelectorAll('#opts button').forEach(b=>b.classList.remove('on'));
+  $('numWrap').style.display='none';$('num').value='';$('fb').className='fb';$('hintBox').className='hint';$('hintBtn').textContent='힌트 보기 (0/3)';
+  table();render();chips();scaf();log('view',{});return true;
+}
+function chips(){
+  $('chips').innerHTML='';
+  FN.forEach(o=>{const b=document.createElement('button');b.className='chip'+(cur.id===o.id?' on':'')+(S.solved[o.id]?' done':'');b.textContent=M(o.d?'W(x)':o.e,1);b.onclick=()=>{setFn(o);$('custom').style.display='none'};$('chips').appendChild(b)});
+  const rd=document.createElement('button');rd.className='chip';rd.textContent='🎲 랜덤';rd.onclick=pickRandom;$('chips').appendChild(rd);
+  const c=document.createElement('button');c.className='chip'+(cur.id==='custom'?' on':'');c.textContent='✏️ 직접 입력';c.onclick=()=>{$('custom').style.display=$('custom').style.display==='none'?'block':'none'};$('chips').appendChild(c);
+  const n=FN.filter(o=>S.solved[o.id]).length;$('progT').textContent=n+' / '+FN.length;$('progB').style.width=n/FN.length*100+'%';zpd();
+}
+function table(){
+  const {f,a}=cur,d=[0.1,0.01,0.001,0.0001];
+  $('tbody').innerHTML=d.map(e=>`<tr><td>${e}</td><td>${fmt(a-e)}</td><td>${fmt(safe(f,a-e))}</td><td>${fmt(a+e)}</td><td>${fmt(safe(f,a+e))}</td></tr>`).join('');
+}
+
+/* ===== 그래프 ===== */
+const VW=700,VH=360,PL=48,PB=26;
+function render(){
+  const {f,a,w,res}=cur,x0=a-w,x1=a+w,N=1400,xs=[],ys=[];
+  for(let i=0;i<=N;i++){const x=x0+(x1-x0)*i/N;xs.push(x);ys.push(i===N/2?NaN:safe(f,x))}
+  const fin=ys.filter(isFinite).sort((p,q)=>p-q),q=res.cat==='inf'?.12:.03;
+  let lo=fin.length?fin[Math.floor(fin.length*q)]:-1,hi=fin.length?fin[Math.ceil(fin.length*(1-q))-1]:1;
+  if(res.cat==='conv'){lo=Math.min(lo,res.L);hi=Math.max(hi,res.L)}
+  if(hi-lo<1e-9){lo-=1;hi+=1}
+  const pd=(hi-lo)*.18;lo-=pd;hi+=pd;const sp=hi-lo;
+  const X=x=>PL+(x-x0)/(x1-x0)*(VW-PL-10),Y=y=>VH-PB-(y-lo)/sp*(VH-PB-10);
+  sc={X,Y,lo,hi,x0,x1};
+  let g='';
+  for(let i=0;i<=4;i++){const x=x0+(x1-x0)*i/4,y=lo+sp*i/4;
+    g+=`<line x1="${X(x)}" x2="${X(x)}" y1="0" y2="${VH-PB}" stroke="#e8edf5"/><text x="${X(x)}" y="${VH-8}" text-anchor="middle" font-size="11" fill="#64748b">${tick(x)}</text>`;
+    g+=`<line x1="${PL}" x2="${VW}" y1="${Y(y)}" y2="${Y(y)}" stroke="#e8edf5"/><text x="${PL-6}" y="${Y(y)+4}" text-anchor="end" font-size="11" fill="#64748b">${tick(y)}</text>`}
+  if(x0<0&&x1>0)g+=`<line x1="${X(0)}" x2="${X(0)}" y1="0" y2="${VH-PB}" stroke="#7d899d" stroke-width="1.5"/>`;
+  if(lo<0&&hi>0)g+=`<line x1="${PL}" x2="${VW}" y1="${Y(0)}" y2="${Y(0)}" stroke="#7d899d" stroke-width="1.5"/>`;
+  g+=`<line x1="${X(a)}" x2="${X(a)}" y1="0" y2="${VH-PB}" stroke="#4d7cfe" stroke-dasharray="4 4" opacity=".6"/>`;
+  let L=res.cat==='conv'?res.L:null;
+  if(L!==null)g+=`<line x1="${PL}" x2="${VW}" y1="${Y(L)}" y2="${Y(L)}" stroke="#16866a" stroke-dasharray="4 4" opacity=".6"/>`;
+  // ε–δ
+  let em='';
+  if($('edet').open){
+    if(L===null)em='극한값이 하나로 정해지는(수렴하는) 함수에서만 ε–δ를 확인할 수 있어요.';
+    else{
+      const E=+$('eps').value*sp*.5,D=w*Math.pow(+$('del').value,2);let ok=true;
+      for(let i=0;i<=300;i++){const x=a-D+2*D*i/300;if(Math.abs(x-a)<D*1e-9)continue;if(!(Math.abs(safe(f,x)-L)<E)){ok=false;break}}
+      g+=`<rect x="${X(a-D)}" y="0" width="${Math.max(1,X(a+D)-X(a-D))}" height="${VH-PB}" fill="rgba(77,124,254,.1)"/><rect x="${PL}" y="${Y(L+E)}" width="${VW-PL}" height="${Math.max(1,Y(L-E)-Y(L+E))}" fill="rgba(22,134,106,.14)"/>`;
+      em=M(`ε = ${fmt(E)}, δ = ${fmt(D)} → `)+(ok?'δ 안의 모든 x에서 f(x)가 L±ε 안에 들어와요 ✓':'일부 x에서 f(x)가 L±ε 밖으로 나가요. δ를 더 줄여 보세요.');
+    }
+    $('emsg').textContent=em;$('emsg').className='fb show'+(em.includes('✓')?'':' bad');
+  }
+  let dl='',dr='',py=NaN,ps=false;
+  for(let i=0;i<=N;i++){const y=ys[i];if(!isFinite(y)){py=NaN;continue}
+    const sd=xs[i]>a;if(sd!==ps){py=NaN;ps=sd}
+    const cy=Math.max(lo-3*sp,Math.min(hi+3*sp,y)),brk=!isFinite(py)||Math.abs(cy-py)>.5*sp,s=(brk?'M':'L')+X(xs[i]).toFixed(1)+','+Y(cy).toFixed(1);
+    if(sd)dr+=s;else dl+=s;py=cy}
+  g+=`<path d="${dl}" fill="none" stroke="#16a085" stroke-width="3" stroke-linejoin="round"/><path d="${dr}" fill="none" stroke="#e29a32" stroke-width="3" stroke-linejoin="round"/>`;
+  const fa=safe(f,a);$('fa').textContent=M('x = '+fmt(a)+'에서 함수값: ')+fmt(fa);
+  if(isFinite(fa))g+=`<circle cx="${X(a)}" cy="${Y(fa)}" r="6" fill="#17243b" stroke="#fff" stroke-width="2"/>`;
+  if(L!==null&&!(isFinite(fa)&&Math.abs(fa-L)<1e-9))g+=`<circle cx="${X(a)}" cy="${Y(L)}" r="6.5" fill="#fff" stroke="#4c78ef" stroke-width="3"/>`;
+  g+=`<circle id="dot" r="6" fill="#4d7cfe" stroke="#fff" stroke-width="2"/>`;
+  $('svg').innerHTML=g;
+  $('wnote').textContent=M(`보이는 범위: x = ${fmt(a)} ± ${fmt(w)}`);
+  dot();
+}
+function dot(){
+  const {f,a,w}=cur,x=a+w*t*Math.abs(t),y=safe(f,x),d=$('dot');
+  $('rx').textContent=fmt(x);$('ry').textContent=fmt(y);$('rd').textContent=fmt(Math.abs(x-a));
+  if(d){const ok=isFinite(y)&&y>=sc.lo&&y<=sc.hi;d.style.display=ok?'':'none';if(ok){d.setAttribute('cx',sc.X(x));d.setAttribute('cy',sc.Y(y))}}
+}
+$('ts').oninput=e=>{stop();t=+e.target.value;dot()};
+let drag=false;const sv=$('svg');
+const pt=e=>{const r=sv.getBoundingClientRect(),vx=(e.clientX-r.left)/r.width*VW,x=sc.x0+(vx-PL)/(VW-PL-10)*(sc.x1-sc.x0);t=Math.max(-1,Math.min(1,(d=>Math.sign(d)*Math.sqrt(Math.abs(d)))((x-cur.a)/cur.w)));$('ts').value=t;dot()};
+sv.onpointerdown=e=>{stop();drag=true;pt(e)};sv.onpointermove=e=>{if(drag)pt(e)};window.addEventListener('pointerup',()=>drag=false);
+function stop(){cancelAnimationFrame(raf);raf=0}
+const ease=p=>p*p*(3-2*p);
+function tween(d,fn,cb){const s=performance.now();const st=n=>{const p=Math.min(1,(n-s)/d);fn(p);if(p<1)raf=requestAnimationFrame(st);else{raf=0;cb&&cb()}};raf=requestAnimationFrame(st)}
+const setT=v=>{t=v;$('ts').value=v;dot()};
+$('bApp').onclick=()=>{stop();tween(6500,p=>setT(-1+.99*ease(p)),()=>tween(6500,p=>setT(1-.99*ease(p))));log('approach',{})};
+$('bZoomAuto').onclick=()=>{stop();const w0=cur.w;tween(9000,p=>{cur.w=w0*Math.pow(1e-3,ease(p));render()});log('zoom',{})};
+$('bIn').onclick=()=>{stop();cur.w=Math.max(1e-6,cur.w/5);render()};
+$('bOut').onclick=()=>{stop();cur.w=Math.min(50,cur.w*5);render()};
+$('bReset').onclick=()=>{stop();cur.w=cur.w0;setT(-.7);render()};
+['eps','del'].forEach(i=>$(i).oninput=render);$('edet').ontoggle=()=>{render();if($('edet').open)log('eps-delta',{})};
+$('copyFn').onclick=()=>{copy('lim '+M('x→'+cur.a)+'  '+M(cur.d||cur.e,1));$('copyFn').textContent='복사됨 ✓';setTimeout(()=>$('copyFn').textContent='수식 복사',1200)};
+$('capply').onclick=()=>{const e=$('cexpr').value,a=parseFloat($('ca').value);
+  if(!isFinite(a)||!compile(e)){$('cerr').textContent='식을 이해하지 못했어요. 곱셈은 *, 거듭제곱은 ^로 쓰고 (−x)^2처럼 괄호를 확인해 보세요.';return}
+  $('cerr').textContent='';setFn({id:'custom',e,a,w:1.5,tip:'직접 만든 함수예요. 수치표와 확대로 근거를 찾아 설명해 보세요.'},true);$('custom').style.display='none'};
+function pickRandom(){const un=FN.filter(o=>!S.solved[o.id]),pool=un.length?un:FN;setFn(pool[Math.floor(Math.random()*pool.length)]);tab('lab')}
+$('nextFn').onclick=()=>{if(recFn){setFn(recFn);tab('lab')}else pickRandom()};
+
+/* ===== 예측 ===== */
+document.querySelectorAll('#opts button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#opts button').forEach(x=>x.classList.remove('on'));b.classList.add('on');pred=b.dataset.c;$('numWrap').style.display=pred==='conv'?'block':'none'});
+document.querySelectorAll('#conf .btn').forEach(b=>b.onclick=()=>{conf=+b.dataset.v;document.querySelectorAll('#conf .btn').forEach(x=>x.classList.toggle('on',x===b))});
+const MIS={conv:'f(a)의 값이 아니라, x가 a에 한없이 가까워질 때 함수값이 모이는 곳이 극한이에요. 수치표의 양쪽 값이 어디로 모이는지 보세요.',diff:'한쪽 방향만 보진 않았나요? 왼쪽(초록)과 오른쪽(주황) 값을 따로 비교해 보세요.',inf:'값이 한 숫자에 멈추나요, 아니면 계속 커지거나 작아지나요? 확대하며 확인해 보세요.',osc:'값이 한 곳으로 모이나요, 아니면 계속 오르내리나요? 🔍 자동 확대로 a 근처를 살펴보세요.'};
+$('check').onclick=()=>{
+  const fb=$('fb');fb.className='fb show bad';
+  if(!pred){fb.textContent='먼저 예측을 하나 골라 주세요.';return}
+  const r=cur.res;let numv=null,ok=pred===r.cat,half=ok;
+  if(pred==='conv'){const g=compile($('num').value);numv=g?g(0):NaN;
+    if(!isFinite(numv)){fb.textContent='극한값을 숫자로 적어 주세요.';return}
+    ok=ok&&Math.abs(numv-r.L)<=0.02*Math.max(1,Math.abs(r.L))}
+  tries++;const scB=S.sc,h=hintN;let adj='';
+  const st=cur.id==='custom'?{}:(S.stat[cur.id]||(S.stat[cur.id]={t:0,h:0}));st.t=tries;st.h=Math.max(st.h||0,h);
+  if(ok){fb.className='fb show';if(cur.id!=='custom'){S.solved[cur.id]=1;if(h===0&&tries===1)st.ind=1}
+    if(h===0&&tries===1){if(S.sc>0){S.sc--;adj='도움 없이 해결했어요! 다음부터 도움을 한 단계 줄일게요 (비계 걷어내기).'}else adj='혼자 힘으로 해결했어요. 독립 영역으로 이동했어요!'}
+    else adj='도움을 받아 해결했어요. 이 경험이 다음엔 혼자 해내는 힘이 돼요 (ZPD 안에서의 성장).';
+    fb.textContent=M('정확해요! ')+(r.cat==='conv'?M('극한값은 '+fmt(r.L)+'이에요. '):CATS[r.cat]+'이에요. ')+M(cur.tip)+'\n'+adj+(conf===1?'\n확신이 없었는데 맞혔네요! 어떤 근거가 도움이 됐는지 생각 나누기 창에 써 보세요.':'')}
+  else{fb.textContent=half?'방향은 맞아요. 값을 다시 확인해 보세요. 수치표의 숫자가 어디에 가까워지나요?':(S.sc>=2?'아직 달라요. '+MIS[r.cat]:'아직 달라요. 초록(왼쪽)·주황(오른쪽) 선이 각각 어디로 향하는지, 확대하면 어떻게 보이는지 다시 관찰해 보세요.');
+    if(conf===3)fb.textContent+='\n확신했는데 달랐네요. 지금이 내 생각의 오류를 찾을 좋은 기회예요!';
+    if(tries===3&&S.sc<3){S.sc++;fb.textContent+='\n조금 어렵죠? 도움을 한 단계 늘려 드릴게요.'}}
+  save();chips();scaf();
+  log('answer',{pred:CATS[pred],num:numv,ok,tries,hints:h,scaffold:scB,conf});
+};
+$('hintBtn').onclick=()=>{
+  if(hintN>=3)return;if(S.sc===0&&tries<2){$('hintBox').textContent='지금은 혼자 도전 중이에요. 두 번 시도한 뒤에 힌트가 열려요. (도움이 필요하면 실험 탭에서 "도움 더 받기")';$('hintBox').className='hint show';return}hintN++;const f=cur.f,a=cur.a,h=$('hintBox');
+  const H=['왼쪽에서 다가갈 때와 오른쪽에서 다가갈 때를 나누어 관찰해 보세요. 실험 탭의 ▶ 버튼이 도움이 돼요.',
+    M(`x = ${fmt(a-.01)}일 때 f = ${fmt(safe(f,a-.01))}, x = ${fmt(a+.01)}일 때 f = ${fmt(safe(f,a+.01))}. x = ${fmt(a-.0001)}일 때 f = ${fmt(safe(f,a-.0001))}, x = ${fmt(a+.0001)}일 때 f = ${fmt(safe(f,a+.0001))}. 값들이 한 곳으로 모이나요?`),M(cur.tip)];
+  h.textContent='힌트 '+hintN+' · '+H[hintN-1];h.className='hint show';$('hintBtn').textContent='힌트 보기 ('+hintN+'/3)';log('hint',{n:hintN});
+};
+
+/* ===== 서버 연동 ===== */
+function status(){
+  const n=S.q.length;$('sync').textContent=S.guest?'저장 안 함':!CFG.SCRIPT_URL?'이 기기에만 저장':n?'전송 대기 '+n:'저장됨 ✓';
+  $('who').textContent=S.guest?'둘러보기':S.name+' · '+S.code;
+}
+let busy=false;
+async function flush(){
+  if(busy||!CFG.SCRIPT_URL||S.guest)return;busy=true;
+  while(S.q.length){try{const r=await fetch(CFG.SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(S.q[0])});const j=await r.json();if(!j.ok)throw 0;S.q.shift();save();status()}catch(e){break}}
+  busy=false;status();
+}
+function log(type,data){
+  const ev={t:new Date().toISOString(),code:S.code,name:S.name,sid:S.sid,type,fn:cur?cur.e:'',a:cur?cur.a:'',data:JSON.stringify(data)};
+  S.log.push(ev);if(S.log.length>300)S.log.shift();
+  if(!S.guest&&CFG.SCRIPT_URL&&type!=='view')S.q.push(ev);save();status();flush();
+}
+async function board(){
+  const el=$('board');el.textContent='';let items=[];
+  if(CFG.SCRIPT_URL&&!S.guest&&S.code){try{const r=await fetch(CFG.SCRIPT_URL+'?action=board&code='+encodeURIComponent(S.code));const j=await r.json();if(j.error&&!j.ok)throw new Error(j.error);items=j.items||[]}catch(e){el.textContent='친구들의 글을 불러오지 못했어요. ('+(e.message||e)+')'}}
+  else items=S.log.filter(l=>l.type==='thought').map(l=>({name:'나',text:JSON.parse(l.data).text,fn:l.fn}));
+  if(!items.length&&!el.textContent)el.textContent='아직 올라온 생각이 없어요. 첫 번째로 남겨 보세요!';
+  items.slice(-40).reverse().forEach(it=>{const p=document.createElement('div');p.className='post';const b=document.createElement('b');b.textContent=it.name;const s=document.createElement('small');s.textContent=M(it.fn||'');const d=document.createElement('div');d.textContent=it.text;p.append(b,s,d);el.appendChild(p)});
+}
+$('refresh').onclick=board;
+$('post').onclick=()=>{const v=M($('thought').value.trim());if(!v){$('thought').focus();return}
+  log('thought',{text:v});$('thought').value='';setTimeout(board,CFG.SCRIPT_URL?800:0)};
+$('convert').onclick=()=>{$('thought').value=M($('thought').value)};$('thought').onblur=$('convert').onclick;
+['𝑥','𝑦','²','³','√','∞','→','≠','≤','≥','±','π','lim','Σ'].forEach(k=>{const b=document.createElement('button');b.textContent=k;b.type='button';b.onclick=()=>{const t=$('thought'),s=t.selectionStart;t.value=t.value.slice(0,s)+k+t.value.slice(t.selectionEnd);t.focus();t.selectionStart=t.selectionEnd=s+k.length};$('keys').appendChild(b)});
+
+if(CFG.FORM_URL){$('formLink').href=CFG.FORM_URL;$('formLink').style.display=''}
+$('logout').onclick=async()=>{await flush();S={sc:3,stat:{},name:'',code:'',guest:false,sid:Math.random().toString(36).slice(2,9),solved:{},log:[],q:[]};save();$('jn').value='';$('jc').value='';$('jerr').textContent='';setFn(FN[0]);status();board();$('join').classList.add('on')};
+
+/* ===== 입장 ===== */
+function enter(){$('join').classList.remove('on');status()}
+$('jguest').onclick=()=>{S.guest=true;S.name='';S.code='';save();enter()};
+$('jgo').onclick=async()=>{
+  const n=$('jn').value.trim(),c=$('jc').value.trim().toUpperCase(),e=$('jerr');
+  if(!n||!c){e.textContent='이름과 수업 코드를 모두 입력해 주세요.';return}
+  if(CFG.SCRIPT_URL){e.textContent='확인 중…';try{const r=await fetch(CFG.SCRIPT_URL+'?action=join&code='+encodeURIComponent(c));const j=await r.json();if(!j.ok){e.textContent=j.error||'수업 코드를 확인해 주세요.';return}}catch(x){e.textContent='서버에 연결하지 못했어요. 일단 입장하고, 기록은 나중에 전송돼요.'}}
+  S.name=n;S.code=c;S.guest=false;save();enter();log('join',{});board();
+};
+
+$('tclose').onclick=()=>$('tmodal').classList.remove('on');
+$('jteach').onclick=async()=>{
+  if(!CFG.SCRIPT_URL){$('jerr').textContent='교사용 요약은 SCRIPT_URL 설정 후 사용할 수 있어요.';return}
+  const k=prompt('교사 키'),c=k&&prompt('수업 코드');if(!k||!c)return;
+  try{const r=await fetch(CFG.SCRIPT_URL+'?action=summary&code='+encodeURIComponent(c.toUpperCase())+'&key='+encodeURIComponent(k)),j=await r.json();
+    if(!j.ok){$('jerr').textContent=j.error||'확인에 실패했어요.';return}
+    const H=['이름','독립 해결','도움 받아 해결','힌트','시도','최근 도움수준','생각 글'],tb=document.createElement('table');
+    tb.innerHTML='<thead><tr>'+H.map(h=>'<th>'+h+'</th>').join('')+'</tr></thead>';const bd=document.createElement('tbody');
+    j.rows.forEach(w=>{const tr=document.createElement('tr');[w.name,w.ind,w.helped,w.hints,w.tries,w.sc,w.posts].forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.appendChild(td)});bd.appendChild(tr)});
+    tb.appendChild(bd);$('tbl').innerHTML='';$('tbl').appendChild(tb);$('tmodal').classList.add('on')}
+  catch(e){$('jerr').textContent='서버에 연결하지 못했어요.'}
+};
+/* ===== 탭 ===== */
+function openSh(){$('shmodal').classList.add('on');board()}
+const closeSh=()=>$('shmodal').classList.remove('on');
+$('shopen').onclick=openSh;$('shclose').onclick=closeSh;$('shmodal').onclick=e=>{if(e.target===$('shmodal'))closeSh()};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSh();$('tmodal').classList.remove('on')}});
+function tab(k){if(k==='share'){openSh();return}const el=$('t-'+k);el.scrollIntoView({behavior:'smooth',block:'nearest'});el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),900)}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>tab(b.dataset.t));
+
+function scaf(){
+  const v=S.sc,T=['혼자 도전: 도움 없이 스스로 관찰해 보세요. 두 번 틀리면 힌트가 열려요.','최소 도움: 왼쪽과 오른쪽에서 함수값이 각각 어디로 향하는지 말해 볼 수 있나요?','부분 도움: ① 왼쪽·오른쪽을 따로 관찰 → ② 수치표 확인 → ③ 두 값을 비교해 예측해 보세요.','충분한 도움: 아래 단계를 순서대로 눌러 보며 따라가 보세요.'];
+  const lab='도움 수준 '+'●'.repeat(v)+'○'.repeat(3-v);
+  $('scaf').innerHTML='<div class="scrow"><b>'+lab+'</b><span><button class="btn" id="scUp">도움 더 받기</button> <button class="btn" id="scDn">도움 줄이기</button></span></div><div class="q">'+M(T[v])+'</div>'+(v===3?'<div class="row"><button class="btn" id="st1">① ▶ 양쪽에서 다가가기</button><button class="btn" id="st2">② 수치표 확인</button><button class="btn" id="st3">③ 예측하러 가기</button></div>':'');
+  $('scbar').textContent=lab+(v===0?' · 혼자 도전 중':'');
+  $('scUp').onclick=()=>{S.sc=Math.min(3,S.sc+1);save();scaf();log('scaffold',{to:S.sc})};$('scDn').onclick=()=>{S.sc=Math.max(0,S.sc-1);save();scaf();log('scaffold',{to:S.sc})};
+  if(v===3){$('st1').onclick=()=>$('bApp').click();$('st2').onclick=()=>{$('tdet').open=true;$('tdet').scrollIntoView({behavior:'smooth'})};$('st3').onclick=()=>tab('predict');$('tdet').open=true}
+  $('framesWrap').style.display=v>=1?'':'none';
+}
+function zpd(){
+  let mx=0;FN.forEach(o=>{if((S.stat[o.id]||{}).ind)mx=Math.max(mx,o.lv)});
+  const Z=[[],[],[]];FN.forEach(o=>{const t=S.stat[o.id]||{};Z[t.ind?0:(S.solved[o.id]||t.t>0||o.lv<=mx+1)?1:2].push(o)});
+  const T=['🟢 혼자 할 수 있어요','🟡 도움받으면 할 수 있어요 (ZPD)','⚪ 아직 먼 도전'];
+  $('zones').innerHTML='';
+  Z.forEach((z,i)=>{const d=document.createElement('div');d.className='zone z'+(i+1);const h=document.createElement('h3');h.textContent=T[i];d.appendChild(h);
+    if(!z.length){const e=document.createElement('small');e.textContent='아직 없어요';d.appendChild(e)}
+    z.forEach(o=>{const b=document.createElement('button');b.className='chip'+(S.solved[o.id]?' done':'');b.textContent=M(o.d?'W(x)':o.e,1);b.onclick=()=>{setFn(o);tab('lab')};d.appendChild(b)});$('zones').appendChild(d)});
+  recFn=Z[1].filter(o=>!S.solved[o.id]).sort((p,q)=>p.lv-q.lv)[0]||Z[2][0]||null;
+  $('recRow').textContent=recFn?M('추천 도전: f(x) = '+(recFn.d||recFn.e),1).replace('f(x)',M('f(x)'))+' — 지금의 나에게 딱 맞는 난이도예요.':'모든 함수를 해결했어요! 직접 입력으로 새 함수를 만들어 보세요.';
+}
+walk(document.body);
+['나는 ______라고 예측한다. 왜냐하면 ______ 때문이다.','수치표에서 𝑥가 ___에 가까워질 때 𝑓(𝑥)가 ___에 가까워지므로 ______이다.','왼쪽 극한은 ___, 오른쪽 극한은 ___이므로 ______이다.','친구의 "______"라는 설명을 보고 내 생각이 ______로 바뀌었다.'].forEach(k=>{const b=document.createElement('button');b.textContent=k.slice(0,12)+'…';b.title=k;b.type='button';b.style.fontSize='13px';b.onclick=()=>{const t=$('thought'),p=t.selectionStart;t.value=t.value.slice(0,p)+k+t.value.slice(t.selectionEnd);t.focus()};$('frames').appendChild(b)});
+scaf();zpd();
+setFn(FN[0]);status();flush();board();
+if(!S.name&&!S.guest)$('join').classList.add('on');
+})();
+</script>
+</body>
+</html>
